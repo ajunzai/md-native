@@ -1,4 +1,5 @@
 # md-native
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 这是一款用于管理md的原生桌面应用
 
