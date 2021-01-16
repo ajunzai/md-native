@@ -1,24 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// import './App.scss'
+import FileSearch from './components/FileSearch'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App flex h-full">
+      <div className="left-panel w-1/4">
+        <FileSearch 
+          title="我的云文档"
+          onFileSearch={(val: string) => {console.log(val);
+          }}/>
+      </div>
+      <div className="right-panel w-3/4 bg-blue-400">this is right</div>
     </div>
   );
 }

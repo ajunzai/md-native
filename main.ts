@@ -12,4 +12,5 @@ app.on('ready', () => {
     })
     const loadUrl = isDev ? 'http://localhost:3000': ''
     mainWindow.loadURL(loadUrl)
+    mainWindow.webContents.openDevTools()
 })

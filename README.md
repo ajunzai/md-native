@@ -5,7 +5,7 @@
 
 
 
-
+- 警告 Unknown at rule @tailwindcss 可以设置"css.lint.unknownAtRules": "ignore"
 
 - feat： 新功能（feature)
 - fix: 修补 bug

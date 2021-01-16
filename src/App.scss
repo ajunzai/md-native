@@ -1,0 +1,14 @@
+.App {
+  height: 100%;
+  display: flex;
+  text-align: center;
+  .left-panel {
+    flex: 1;
+    background-color: red;
+  }
+  
+  .right-panel {
+    flex: 3;
+    background-color: sandybrown;
+  }
+}
