@@ -8,7 +8,7 @@ interface Iprop {
 
 const FileSearch: React.FC<Iprop> = ({ title, onFileSearch }) => {
 	const [inputActive, setInputActive] = useState(false)
-	const [value, setvalue] = useState('')
+	const [value, setValue] = useState('')
 	const inputRef = useRef(null)
 	useEffect(() => {
 		const keyUpFn = (event: any) => {
@@ -32,15 +32,15 @@ const FileSearch: React.FC<Iprop> = ({ title, onFileSearch }) => {
 	}, [inputActive])
 	const closeSearch = () => {
 		setInputActive(false)
-		setvalue('')
+		setValue('')
 		onFileSearch(false)
 	}
 	return (
-		<div className="flex justify-center items-center box-content w-full h-8 px-2.5 mt-1.5 bg-blue-300 rounded-sm">
+		<div className="flex justify-between items-center box-border w-full h-8 px-2.5 bg-gray-300 rounded-sm">
 			{ !inputActive &&
 				<>
-					<span className="inline-block pl-2 leading-8 w-3/4 h-8">{title}</span>
-					<button type="button" className="w-1/4" onClick={() =>setInputActive(true)} >
+					<span className="flew-grow pl-2 leading-8 h-8">{title}</span>
+					<button type="button" className="w-8" onClick={() =>setInputActive(true)} >
 						<FontAwesomeIcon
 							title="搜索"
 							size="lg"
@@ -51,8 +51,8 @@ const FileSearch: React.FC<Iprop> = ({ title, onFileSearch }) => {
 			}
 			{ inputActive &&
 				<>
-					<input className="w-3/4 rounded-sm pl-1.5" ref={inputRef} value={value} onChange={(e) => setvalue(e.target.value)} />
-					<button className="w-1/4" onClick={closeSearch}>
+					<input className="flew-grow w-full rounded-sm pl-1.5" ref={inputRef} value={value} onChange={(e) => setValue(e.target.value)} />
+					<button className="w-8" onClick={closeSearch}>
 						<FontAwesomeIcon
 							title="关闭"
 							size="lg"

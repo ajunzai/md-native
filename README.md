@@ -3,6 +3,7 @@
 
 这是一款用于管理md的原生桌面应用
 
+![](assets/md原型图.png)
 
 
 - 警告 Unknown at rule @tailwindcss 可以设置"css.lint.unknownAtRules": "ignore"
