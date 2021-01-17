@@ -4,15 +4,24 @@ import { faTimes, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 
 import { File } from '../types/type'
+import useKeyPress from '../hooks/useKeyPress'
 interface FileListprops {
   files: File[]
   onSaveEdit: Function
   onFileDelete: Function
   onFileClick: Function
 }
+//! 在点击列表后点击搜索有bug，需要增加全局监听事件
 const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, onSaveEdit }) => {
   const [editStatus, setEditStatus] = useState(0)
   const [value, setValue] = useState('')
+
+  // TODO 是否还可以拆分hook
+
+  // 取键盘事件的hooks
+	const enterPressed = useKeyPress(13)
+  const escPressed = useKeyPress(27)
+  
 	const inputRef = useRef(null)
 
   const toggleEdit = (file: File) => {
@@ -26,18 +35,12 @@ const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, o
 	}
 
   useEffect(() => {
-		const keyUpFn = (event: any) => {
-			const {keyCode} = event
-			if (keyCode === 27 && editStatus) {
-				closeSearch()
-			} else if (keyCode === 13 && editStatus) {
-				onSaveEdit(editStatus, value)
-			}
-		}
-		document.addEventListener('keyup', keyUpFn)
-		return () => {
-			document.removeEventListener('keyup', keyUpFn)
-		}
+    if (escPressed && editStatus) {
+      closeSearch()
+    }
+    if (enterPressed && editStatus) {
+      onSaveEdit(editStatus, value)
+    }
   })
   
   useEffect(() => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+import useKeyPress from '../hooks/useKeyPress'
 interface Iprop {
 	title: string
 	onFileSearch: Function
@@ -9,19 +10,19 @@ interface Iprop {
 const FileSearch: React.FC<Iprop> = ({ title, onFileSearch }) => {
 	const [inputActive, setInputActive] = useState(false)
 	const [value, setValue] = useState('')
+	
+	// 取键盘事件的hooks
+	const enterPressed = useKeyPress(13)
+	const escPressed = useKeyPress(27)
+	
 	const inputRef = useRef(null)
+
 	useEffect(() => {
-		const keyUpFn = (event: any) => {
-			const {keyCode} = event
-			if (keyCode === 27 && inputActive) {
-				closeSearch()
-			} else if (keyCode === 13 && inputActive) {
-				onFileSearch(value)
-			}
+		if ( escPressed && inputActive) {
+			closeSearch()
 		}
-		document.addEventListener('keyup', keyUpFn)
-		return () => {
-			document.removeEventListener('keyup', keyUpFn)
+		if (enterPressed && inputActive) {
+			onFileSearch(value)
 		}
 	})
 

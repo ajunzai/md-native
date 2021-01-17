@@ -8,6 +8,18 @@
 
 - 警告 Unknown at rule @tailwindcss 可以设置"css.lint.unknownAtRules": "ignore"
 
+
+## 杂项
+
+1. 注释提示***vscode安装了Better Comments***
+
+-    //！ 红色注释
+-    //?  蓝色注释
+-    ////  灰色删除线注释
+-    // todo 橘红色注释
+-    // * 浅绿色注释
+
+2. commit提交提示
 - feat： 新功能（feature)
 - fix: 修补 bug
 - docs: 编写文档
