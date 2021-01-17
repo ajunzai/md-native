@@ -1,6 +1,5 @@
 import React from 'react';
 import FileList from './components/FileList';
-// import './App.scss'
 import FileSearch from './components/FileSearch'
 import defaultFiles from './utils/defaultFiles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,7 +8,7 @@ import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons'
 function App() {
   return (
     <div className="App flex h-full">
-      <div className="flex flex-col w-1/4">
+      <div className="flex flex-col w-1/4 min-w-panel-l">
         <FileSearch 
           title="我的云文档"
           onFileSearch={(val: string) => {console.log(val);}}
@@ -28,7 +27,7 @@ function App() {
               icon={faPlus}
             />
           </button>
-          <button className="flex-1 bg-blue-500 hover:bg-blue-300">
+          <button className="flex-1 bg-primary-blue hover:bg-opacity-60">
             <FontAwesomeIcon
               title="导入"
               size="lg"

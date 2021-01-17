@@ -1,4 +1,6 @@
-import './tailwind.css'
+import 'normalize.css/normalize.css';
+import 'tailwindcss/tailwind.css';
+import './global.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';

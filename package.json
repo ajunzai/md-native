@@ -6,6 +6,8 @@
   "author": "x_junzai",
   "description": "my md Electron",
   "scripts": {
+    "start:craco": "craco start",
+    "build:craco": "craco build",
     "start:js": "react-scripts start",
     "start:tailwind": "tailwindcss build src/index.css -o src/tailwind.css",
     "start:css": "yarn start:tailwind",
@@ -16,11 +18,12 @@
     "eject": "react-scripts eject",
     "commit": "git-cz",
     "electron": "wait-on http://localhost:3000 && electron .",
-    "react": "cross-env BROWSER=false yarn start",
-    "dev": "concurrently \"yarn electron\" \" yarn start:tailwind && yarn react\""
+    "react": "cross-env BROWSER=false yarn start:craco",
+    "dev": "concurrently \"yarn electron\" \"yarn react\""
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.12.7",
+    "@craco/craco": "^6.0.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",

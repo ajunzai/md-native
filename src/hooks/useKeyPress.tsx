@@ -20,6 +20,7 @@ const useKeyPress = ( targetKeyCode :any) => {
             document.removeEventListener('keydown', keyDownHandler)
             document.removeEventListener('keyup', keyUpHandler)
         }
+        // eslint-disable-next-line
     }, [])
     return keyPressed
 }

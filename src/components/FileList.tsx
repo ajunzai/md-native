@@ -63,7 +63,7 @@ const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, o
                   size="lg"
                   icon={faMarkdown}
                 />
-                <span className="flex-grow pl-1.5" onClick={() => onFileClick(file.id)}>{file.title}</span>
+                <span className="flex-grow pl-1.5 min-w-title" onClick={() => onFileClick(file.id)}>{file.title}</span>
                 <button type="button" className="w-8" onClick={() => {toggleEdit(file)}}>
                   <FontAwesomeIcon
                     title="编辑"
