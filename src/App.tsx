@@ -1,6 +1,8 @@
 import React from 'react';
 import FileList from './components/FileList';
-import FileSearch from './components/FileSearch'
+import FileSearch from './components/FileSearch';
+import OperateButton from './components/OperateButton';
+import TableList from './components/tabList/TabList'
 import defaultFiles from './utils/defaultFiles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons'
@@ -19,24 +21,15 @@ function App() {
           onFileDelete={(id: number) => {console.log(id)}}
           onSaveEdit={(id: number, value: string) => {console.log(id, value)}}
         />
-        <div className="flex h-8 ">
-          <button className="flex-1 bg-gray-500 hover:bg-gray-300">
-            <FontAwesomeIcon
-              title="新建"
-              size="lg"
-              icon={faPlus}
-            />
-          </button>
-          <button className="flex-1 bg-primary-blue hover:bg-opacity-60">
-            <FontAwesomeIcon
-              title="导入"
-              size="lg"
-              icon={faFileImport}
-            />
-          </button>
-        </div>
+        <OperateButton />
       </div>
-      <div className="right-panel w-3/4 bg-blue-400">this is right</div>
+      <div className="right-panel w-3/4">
+        <TableList
+          files={defaultFiles}
+          activeId={1}
+          unsaveIds={[1,2,3]}
+        />
+      </div>
     </div>
   );
 }

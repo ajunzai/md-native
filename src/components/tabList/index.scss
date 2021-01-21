@@ -1,0 +1,19 @@
+.tab-item {
+    @apply flex items-center box-border px-2 border rounded-lg;
+}
+.tab-item .icon-close {
+	visibility: hidden;
+}
+.tab-item:hover .icon-close {
+	visibility: hidden;
+} 
+.tab-item.active .icon-close{
+	visibility: visible;
+}
+// TODO 未保存再做
+// .tab-item.active .unsave{ 
+// 	visibility: visible;
+// }
+// .tab-item.active:hover .unsave{ 
+// 	visibility: hidden;
+// }
