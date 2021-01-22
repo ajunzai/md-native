@@ -8,7 +8,7 @@ interface Tabs {
   files: File[];
   activeId: number;
   unsaveIds: number[];
-}
+} 
 const TabList: React.FC<Tabs> = ({ files, activeId, unsaveIds }) => {
   return (
     <ul className="flex w-full h-8">
