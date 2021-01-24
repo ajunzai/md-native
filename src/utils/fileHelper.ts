@@ -1,6 +1,6 @@
 // 如果不加window webpack为从bunlde里面找，也就是node_modules里面。
 // 加上window就会通过node.js去寻找
-const fs = window.require('fs').promise
+const fs = window.require('fs').promises
 const fileHelper = {
   readFile: (path: any) => {
     return fs.readFile(path, { encoding: 'utf8' })

@@ -49,7 +49,7 @@ const FileList: React.FC<FileListprops> = ({
       closeSearch(editItem as File)
     }
     if (enterPressed && editStatus && value.trim() !== '') {
-      onSaveEdit((editItem as File).id, value)
+      onSaveEdit((editItem as File).id, value, (editItem as File).isNew)
       closeSearch()
     }
   })
