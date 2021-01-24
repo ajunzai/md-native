@@ -18,7 +18,7 @@ const FileList: React.FC<FileListprops> = ({
   onFileClick,
   onSaveEdit,
 }) => {
-  const [editStatus, setEditStatus] = useState(0)
+  const [editStatus, setEditStatus] = useState('')
   const [value, setValue] = useState('')
 
   // TODO 是否还可以拆分hook
@@ -34,17 +34,22 @@ const FileList: React.FC<FileListprops> = ({
     setValue(file.title)
   }
 
-  const closeSearch = () => {
-    setEditStatus(0)
+  const closeSearch = (file?: File) => {
+    setEditStatus('')
     setValue('')
+    // if we are editing a newly created file, we should delete this file when pressing esc
+    if (file?.isNew) {
+      onFileDelete(file.id)
+    }
   }
 
   useEffect(() => {
+    const editItem = files.find((file) => file.id === editStatus)
     if (escPressed && editStatus) {
-      closeSearch()
+      closeSearch(editItem as File)
     }
-    if (enterPressed && editStatus) {
-      onSaveEdit(editStatus, value)
+    if (enterPressed && editStatus && value.trim() !== '') {
+      onSaveEdit((editItem as File).id, value)
       closeSearch()
     }
   })
@@ -54,6 +59,14 @@ const FileList: React.FC<FileListprops> = ({
       ;(inputRef as any).current.focus()
     }
   }, [editStatus])
+
+  // add new file should set Status
+  useEffect(() => {
+    const newFile = files.find((file) => file.isNew)
+    if (newFile) {
+      setEditStatus(newFile.id)
+    }
+  }, [files])
   return (
     <ul className="h-full">
       {files.map((file) => (
@@ -61,7 +74,7 @@ const FileList: React.FC<FileListprops> = ({
           className="flex h-10 px-2 items-center hover:bg-blue-100 cursor-pointer"
           key={file.id}
         >
-          {file.id !== editStatus && (
+          {file.id !== editStatus && !file.isNew && (
             <>
               <FontAwesomeIcon size="lg" icon={faMarkdown} />
               <span
@@ -92,15 +105,16 @@ const FileList: React.FC<FileListprops> = ({
               </button>
             </>
           )}
-          {file.id === editStatus && (
+          {(file.id === editStatus || file.isNew) && (
             <>
               <input
                 className="flew-grow w-full rounded-sm pl-1.5"
+                placeholder="请输入文件名称"
                 ref={inputRef}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
               />
-              <button className="w-8" onClick={closeSearch}>
+              <button className="w-8" onClick={() => closeSearch(file)}>
                 <FontAwesomeIcon title="关闭" size="lg" icon={faTimes} />
               </button>
             </>

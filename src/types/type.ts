@@ -1,6 +1,7 @@
 export interface File {
-  id: number
+  id: string
   title: string
   body: string
   createdAt: number
+  isNew: boolean
 }

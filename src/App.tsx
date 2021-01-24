@@ -6,19 +6,20 @@ import TableList from './components/tabList/TabList'
 import defaultFiles from './utils/defaultFiles'
 import SimpleMDE from 'react-simplemde-editor'
 import { File } from './types/type'
+import { uuid } from 'uuidv4'
 import 'easymde/dist/easymde.min.css'
 
 function App() {
   const [files, setFiles] = useState(defaultFiles)
-  const [activeFileID, setActiveFileID] = useState(0)
-  const [openedFileIDs, setOpenedFileIDs] = useState([] as number[])
-  const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as number[])
+  const [activeFileID, setActiveFileID] = useState('')
+  const [openedFileIDs, setOpenedFileIDs] = useState([] as string[])
+  const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as string[])
   const [searchFiles, setSearchFiles] = useState([] as File[])
   const openFiles: any = openedFileIDs.map((fileID) => {
     return files.find((file) => file.id === fileID)
   })
 
-  const fileClick = (fileID: number) => {
+  const fileClick = (fileID: string) => {
     // set current active file
     setActiveFileID(fileID)
     // if openFiles don't have the current fileID
@@ -28,11 +29,11 @@ function App() {
     }
   }
 
-  const tabCilck = (fileID: number) => {
+  const tabCilck = (fileID: string) => {
     setActiveFileID(fileID)
   }
 
-  const tabClose = (fileID: number) => {
+  const tabClose = (fileID: string) => {
     // remove current id from openedFileIDs
     const tabsWithout = openedFileIDs.filter((id) => id !== fileID)
     setOpenedFileIDs(tabsWithout)
@@ -42,44 +43,69 @@ function App() {
         setActiveFileID(tabsWithout[0])
       }
     } else {
-      setActiveFileID(0)
+      setActiveFileID('')
     }
   }
 
-  const fileChange = (id: number, value: string) => {
+  const fileChange = (id: string, value: string) => {
     // loop through file Array to update the new file
-    updateFileAttr(id, value)
+    const newFiles = files.map((file) => {
+      if (file.id === id) {
+        file.title = value
+      }
+      return file
+    })
+    setFiles(newFiles)
     if (!unsavedFileIDs.includes(id)) {
       setUnsavedFileIDs([...unsavedFileIDs, id])
     }
   }
 
-  const fileDelete = (id: number) => {
+  const fileDelete = (id: string) => {
     const newFiles = files.filter((file) => file.id !== id)
     setFiles(newFiles)
     // close tab if opened
     tabClose(id)
   }
 
-  const updateFileName = (id: number, title: string) => {
-    updateFileAttr(id, title)
-  }
-
-  const updateFileAttr = (id: number, attr: string) => {
+  const updateFileName = (id: string, title: string) => {
     const newFiles = files.map((file) => {
       if (file.id === id) {
-        file.title = attr
+        file.title = title
+        file.isNew = false
       }
       return file
     })
     setFiles(newFiles)
   }
 
+  // const updateFileAttr = (id: string, attr: string) => {
+  //   const newFiles = files.map((file) => {
+  //     if (file.id === id) {
+  //       file.title = attr
+  //     }
+  //     return file
+  //   })
+  //   setFiles(newFiles)
+  // }
+
   const fileSearch = (keyword: string) => {
     const newFiles = files.filter((file) => file.title.includes(keyword))
     setSearchFiles(newFiles)
   }
 
+  const createNewFile = () => {
+    const newFiles: File = {
+      id: uuid(),
+      title: '',
+      body: '##  请输入markdown',
+      createdAt: new Date().getTime(),
+      isNew: true,
+    }
+    setFiles([...files, newFiles])
+  }
+
+  const importFiles = () => {}
   const avtiveFile = files.find((file) => file.id === activeFileID)
   const searchFileList = searchFiles.length ? searchFiles : files
   return (
@@ -92,7 +118,10 @@ function App() {
           onFileDelete={fileDelete}
           onSaveEdit={updateFileName}
         />
-        <OperateButton />
+        <OperateButton
+          createNewFile={createNewFile}
+          importFiles={importFiles}
+        />
       </div>
       <div className="right-panel w-3/4">
         {avtiveFile && (

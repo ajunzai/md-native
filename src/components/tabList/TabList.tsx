@@ -6,8 +6,8 @@ import './index.scss'
 import classnames from 'classnames'
 interface Tabs {
   files: File[]
-  activeId: number
-  unsaveIds: number[]
+  activeId: string
+  unsaveIds: string[]
   onTabClick: Function
   onTabClose: Function
 }
