@@ -12,17 +12,22 @@ interface FileListprops {
   onFileClick: Function
 }
 //! 在点击列表后点击搜索有bug，需要增加全局监听事件
-const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, onSaveEdit }) => {
+const FileList: React.FC<FileListprops> = ({
+  files,
+  onFileDelete,
+  onFileClick,
+  onSaveEdit,
+}) => {
   const [editStatus, setEditStatus] = useState(0)
   const [value, setValue] = useState('')
 
   // TODO 是否还可以拆分hook
 
   // 取键盘事件的hooks
-	const enterPressed = useKeyPress(13)
+  const enterPressed = useKeyPress(13)
   const escPressed = useKeyPress(27)
-  
-	const inputRef = useRef(null)
+
+  const inputRef = useRef(null)
 
   const toggleEdit = (file: File) => {
     setEditStatus(file.id)
@@ -30,9 +35,9 @@ const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, o
   }
 
   const closeSearch = () => {
-		setEditStatus(0)
-		setValue('')
-	}
+    setEditStatus(0)
+    setValue('')
+  }
 
   useEffect(() => {
     if (escPressed && editStatus) {
@@ -42,64 +47,63 @@ const FileList: React.FC<FileListprops> = ({ files, onFileDelete, onFileClick, o
       onSaveEdit(editStatus, value)
     }
   })
-  
+
   useEffect(() => {
-		if (editStatus) {
-			(inputRef as any).current.focus()
-		}
-	}, [editStatus])
+    if (editStatus) {
+      ;(inputRef as any).current.focus()
+    }
+  }, [editStatus])
   return (
     <ul className="h-full">
-      {
-        files.map(file => (
-          <li
-            className="flex h-10 p-2 items-center hover:bg-blue-100 cursor-pointer"
-            key={file.id}
-          >
-            {
-              file.id !== editStatus &&
-              <>
-                <FontAwesomeIcon
-                  size="lg"
-                  icon={faMarkdown}
-                />
-                <span className="flex-grow pl-1.5 min-w-title" onClick={() => onFileClick(file.id)}>{file.title}</span>
-                <button type="button" className="w-8" onClick={() => {toggleEdit(file)}}>
-                  <FontAwesomeIcon
-                    title="编辑"
-                    size="lg"
-                    icon={faEdit}
-                  />
-                </button>
-                <button type="button" className="w-8" onClick={() => {onFileDelete(file.id)}}>
-                  <FontAwesomeIcon
-                    title="删除"
-                    size="lg"
-                    icon={faTrashAlt}
-                  />
-                </button>
-              </>
-            }
-            {
-              file.id === editStatus &&
-              <>
-                <input 
-                  className="flew-grow w-full rounded-sm pl-1.5" 
-                  ref={inputRef} 
-                  value={value} 
-                  onChange={(e) => setValue(e.target.value)} />
-                <button className="w-8" onClick={closeSearch}>
-                  <FontAwesomeIcon
-                    title="关闭"
-                    size="lg"
-                    icon={faTimes}
-                  />
-                </button>
-              </>
-            }
-          </li>
-        ))
-      }
+      {files.map((file) => (
+        <li
+          className="flex h-10 p-2 items-center hover:bg-blue-100 cursor-pointer"
+          key={file.id}
+        >
+          {file.id !== editStatus && (
+            <>
+              <FontAwesomeIcon size="lg" icon={faMarkdown} />
+              <span
+                className="flex-grow pl-1.5 min-w-title"
+                onClick={() => onFileClick(file.id)}
+              >
+                {file.title}
+              </span>
+              <button
+                type="button"
+                className="w-8"
+                onClick={() => {
+                  toggleEdit(file)
+                }}
+              >
+                <FontAwesomeIcon title="编辑" size="lg" icon={faEdit} />
+              </button>
+              <button
+                type="button"
+                className="w-8"
+                onClick={() => {
+                  onFileDelete(file.id)
+                }}
+              >
+                <FontAwesomeIcon title="删除" size="lg" icon={faTrashAlt} />
+              </button>
+            </>
+          )}
+          {file.id === editStatus && (
+            <>
+              <input
+                className="flew-grow w-full rounded-sm pl-1.5"
+                ref={inputRef}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+              <button className="w-8" onClick={closeSearch}>
+                <FontAwesomeIcon title="关闭" size="lg" icon={faTimes} />
+              </button>
+            </>
+          )}
+        </li>
+      ))}
     </ul>
   )
 }
