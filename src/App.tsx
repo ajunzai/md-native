@@ -6,18 +6,17 @@ import TableList from './components/tabList/TabList'
 import defaultFiles from './utils/defaultFiles'
 import SimpleMDE from 'react-simplemde-editor'
 import { File } from './types/type'
-import { uuid } from 'uuidv4'
+import { v4 as uuidv4 } from 'uuid'
+import { flattenArr, objToArr } from './utils/helper'
 import 'easymde/dist/easymde.min.css'
 
 function App() {
-  const [files, setFiles] = useState(defaultFiles)
+  const [files, setFiles] = useState(flattenArr(defaultFiles))
+  console.log(files)
   const [activeFileID, setActiveFileID] = useState('')
   const [openedFileIDs, setOpenedFileIDs] = useState([] as string[])
   const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as string[])
   const [searchFiles, setSearchFiles] = useState([] as File[])
-  const openFiles: any = openedFileIDs.map((fileID) => {
-    return files.find((file) => file.id === fileID)
-  })
 
   const fileClick = (fileID: string) => {
     // set current active file
@@ -34,7 +33,6 @@ function App() {
   }
 
   const tabClose = (fileID: string) => {
-    // remove current id from openedFileIDs
     const tabsWithout = openedFileIDs.filter((id) => id !== fileID)
     setOpenedFileIDs(tabsWithout)
     // set the active to the first opened tab if still tabs left
@@ -49,65 +47,50 @@ function App() {
 
   const fileChange = (id: string, value: string) => {
     // loop through file Array to update the new file
-    const newFiles = files.map((file) => {
-      if (file.id === id) {
-        file.title = value
-      }
-      return file
-    })
-    setFiles(newFiles)
+    const newFile = { ...files[id], body: value }
+    setFiles({ ...files, [id]: newFile })
     if (!unsavedFileIDs.includes(id)) {
       setUnsavedFileIDs([...unsavedFileIDs, id])
     }
   }
 
   const fileDelete = (id: string) => {
-    const newFiles = files.filter((file) => file.id !== id)
-    setFiles(newFiles)
+    Reflect.deleteProperty(files, id)
+    setFiles(files)
     // close tab if opened
     tabClose(id)
   }
 
   const updateFileName = (id: string, title: string) => {
-    const newFiles = files.map((file) => {
-      if (file.id === id) {
-        file.title = title
-        file.isNew = false
-      }
-      return file
-    })
-    setFiles(newFiles)
+    const newFile = { ...files[id], title, isNew: false }
+    setFiles({ ...files, [id]: newFile })
   }
 
-  // const updateFileAttr = (id: string, attr: string) => {
-  //   const newFiles = files.map((file) => {
-  //     if (file.id === id) {
-  //       file.title = attr
-  //     }
-  //     return file
-  //   })
-  //   setFiles(newFiles)
-  // }
-
   const fileSearch = (keyword: string) => {
-    const newFiles = files.filter((file) => file.title.includes(keyword))
+    const newFiles = fileArr.filter((file) => file.title.includes(keyword))
     setSearchFiles(newFiles)
   }
 
   const createNewFile = () => {
+    const newId = uuidv4()
     const newFiles: File = {
-      id: uuid(),
+      id: newId,
       title: '',
       body: '##  请输入markdown',
       createdAt: new Date().getTime(),
       isNew: true,
     }
-    setFiles([...files, newFiles])
+    setFiles({ ...files, [newId]: newFiles })
   }
 
   const importFiles = () => {}
-  const avtiveFile = files.find((file) => file.id === activeFileID)
-  const searchFileList = searchFiles.length ? searchFiles : files
+
+  const avtiveFile = files[activeFileID]
+  const openFiles: any = openedFileIDs.map((fileID) => files[fileID])
+
+  // 操作用扁平化 ，显示用数组
+  const fileArr = objToArr(files)
+  const searchFileList = searchFiles.length ? searchFiles : fileArr
   return (
     <div className="App flex h-full">
       <div className="flex flex-col w-1/4 min-w-panel-l">
