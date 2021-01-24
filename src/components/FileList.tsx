@@ -57,14 +57,14 @@ const FileList: React.FC<FileListprops> = ({
     <ul className="h-full">
       {files.map((file) => (
         <li
-          className="flex h-10 p-2 items-center hover:bg-blue-100 cursor-pointer"
+          className="flex h-10 px-2 items-center hover:bg-blue-100 cursor-pointer"
           key={file.id}
         >
           {file.id !== editStatus && (
             <>
               <FontAwesomeIcon size="lg" icon={faMarkdown} />
               <span
-                className="flex-grow pl-1.5 min-w-title"
+                className="flex-grow h-search leading-10 pl-1.5 min-w-title"
                 onClick={() => onFileClick(file.id)}
               >
                 {file.title}
@@ -72,7 +72,8 @@ const FileList: React.FC<FileListprops> = ({
               <button
                 type="button"
                 className="w-8"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   toggleEdit(file)
                 }}
               >
@@ -81,7 +82,8 @@ const FileList: React.FC<FileListprops> = ({
               <button
                 type="button"
                 className="w-8"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   onFileDelete(file.id)
                 }}
               >

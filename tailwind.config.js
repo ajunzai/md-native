@@ -38,7 +38,7 @@ module.exports = {
       },
       height: {
         base: '64px',
-        search: '50px',
+        search: '40px',
         120: '120px',
         140: '140px',
         logo: '180px',

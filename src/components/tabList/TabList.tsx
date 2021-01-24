@@ -9,14 +9,14 @@ interface Tabs {
   activeId: number
   unsaveIds: number[]
   onTabClick: Function
-  onCloseTab: Function
+  onTabClose: Function
 }
 const TabList: React.FC<Tabs> = ({
   files,
   activeId,
   unsaveIds,
   onTabClick,
-  onCloseTab,
+  onTabClose,
 }) => {
   return (
     <ul className="flex w-full h-7">
@@ -42,7 +42,7 @@ const TabList: React.FC<Tabs> = ({
                 className="close-icon ml-2"
                 onClick={(e) => {
                   e.stopPropagation()
-                  onCloseTab(file.id)
+                  onTabClose(file.id)
                 }}
               >
                 <FontAwesomeIcon title="关闭" icon={faTimes} />
