@@ -32,3 +32,6 @@
     display: none;
   }
 }
+.active {
+  @apply bg-blue-200;
+}

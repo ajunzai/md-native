@@ -12,7 +12,6 @@ import 'easymde/dist/easymde.min.css'
 
 function App() {
   const [files, setFiles] = useState(flattenArr(defaultFiles))
-  console.log(files)
   const [activeFileID, setActiveFileID] = useState('')
   const [openedFileIDs, setOpenedFileIDs] = useState([] as string[])
   const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as string[])

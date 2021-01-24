@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { File } from '../../types/type'
 import './index.scss'
 import classnames from 'classnames'
@@ -23,14 +23,12 @@ const TabList: React.FC<Tabs> = ({
       {files.map((file) => {
         const withUnsaveMark = unsaveIds.includes(file.id)
         const liStyle = classnames('tab-item', {
-          ['bg-blue-200']: activeId == file.id,
-          active: activeId == file.id,
+          active: activeId === file.id,
           withUnsaved: withUnsaveMark,
         })
         return (
           <li className="nav-item" key={file.id}>
-            <a
-              href="#"
+            <div
               className={liStyle}
               onClick={(e) => {
                 e.preventDefault()
@@ -50,7 +48,7 @@ const TabList: React.FC<Tabs> = ({
               {withUnsaveMark && (
                 <span className="unsave-icon ml-2 bg-gray-500 rounded-full"></span>
               )}
-            </a>
+            </div>
           </li>
         )
       })}
