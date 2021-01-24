@@ -5,6 +5,7 @@ import OperateButton from './components/OperateButton'
 import TableList from './components/tabList/TabList'
 import defaultFiles from './utils/defaultFiles'
 import SimpleMDE from 'react-simplemde-editor'
+import { File } from './types/type'
 import 'easymde/dist/easymde.min.css'
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   const [activeFileID, setActiveFileID] = useState(0)
   const [openedFileIDs, setOpenedFileIDs] = useState([] as number[])
   const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as number[])
-
+  const [searchFiles, setSearchFiles] = useState([] as File[])
   const openFiles: any = openedFileIDs.map((fileID) => {
     return files.find((file) => file.id === fileID)
   })
@@ -47,37 +48,49 @@ function App() {
 
   const fileChange = (id: number, value: string) => {
     // loop through file Array to update the new file
-    const newFiles = files.map((file) => {
-      if (file.id === id) {
-        file.body = value
-      }
-      return file
-    })
-    setFiles(newFiles)
+    updateFileAttr(id, value)
     if (!unsavedFileIDs.includes(id)) {
       setUnsavedFileIDs([...unsavedFileIDs, id])
     }
   }
 
+  const fileDelete = (id: number) => {
+    const newFiles = files.filter((file) => file.id !== id)
+    setFiles(newFiles)
+    // close tab if opened
+    tabClose(id)
+  }
+
+  const updateFileName = (id: number, title: string) => {
+    updateFileAttr(id, title)
+  }
+
+  const updateFileAttr = (id: number, attr: string) => {
+    const newFiles = files.map((file) => {
+      if (file.id === id) {
+        file.title = attr
+      }
+      return file
+    })
+    setFiles(newFiles)
+  }
+
+  const fileSearch = (keyword: string) => {
+    const newFiles = files.filter((file) => file.title.includes(keyword))
+    setSearchFiles(newFiles)
+  }
+
   const avtiveFile = files.find((file) => file.id === activeFileID)
+  const searchFileList = searchFiles.length ? searchFiles : files
   return (
     <div className="App flex h-full">
       <div className="flex flex-col w-1/4 min-w-panel-l">
-        <FileSearch
-          title="我的云文档"
-          onFileSearch={(val: string) => {
-            console.log(val)
-          }}
-        />
+        <FileSearch title="我的云文档" onFileSearch={fileSearch} />
         <FileList
-          files={files}
+          files={searchFileList}
           onFileClick={fileClick}
-          onFileDelete={(id: number) => {
-            console.log(id)
-          }}
-          onSaveEdit={(id: number, value: string) => {
-            console.log(id, value)
-          }}
+          onFileDelete={fileDelete}
+          onSaveEdit={updateFileName}
         />
         <OperateButton />
       </div>

@@ -45,6 +45,7 @@ const FileList: React.FC<FileListprops> = ({
     }
     if (enterPressed && editStatus) {
       onSaveEdit(editStatus, value)
+      closeSearch()
     }
   })
 

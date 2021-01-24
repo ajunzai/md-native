@@ -34,7 +34,7 @@ const FileSearch: React.FC<Iprop> = ({ title, onFileSearch }) => {
   const closeSearch = () => {
     setInputActive(false)
     setValue('')
-    onFileSearch(false)
+    onFileSearch('')
   }
   return (
     <div className="flex justify-between items-center box-border w-full h-8 px-2.5 bg-gray-300 rounded-sm">
