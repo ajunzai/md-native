@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { File, FlattenFiles } from './types/type'
 import { flattenArr, objToArr } from './utils/helper'
 import fileHelper from './utils/fileHelper'
-const path = window.require('path')
+const { join, extname, basename, dirname } = window.require('path')
 const { remote } = window.require('electron')
 
 const Store = window.require('electron-store')
@@ -25,7 +25,7 @@ const saveFileToStore = (files: FlattenFiles) => {
       id,
       path,
       title,
-      createdAt,
+      createdAt: createdAt || new Date().getTime()
     }
     return result
   }, {})
@@ -54,11 +54,15 @@ function App() {
     // set current active file
     setActiveFileID(fileID)
     // TODO 打开文件需要读取文件，不用每次打开而且打开是读取保存后的文件
-    // if openFiles don't have the current fileID
-    // then add new fileId to the openedFileIDs
-    if (!openedFileIDs.includes(fileID)) {
-      setOpenedFileIDs([...openedFileIDs, fileID])
-    }
+    fileHelper.readFile(files[fileID].path).then((data: any) => {
+      console.log('dafa', data)
+      console.log('file', files)
+      // if openFiles don't have the current fileID
+      // then add new fileId to the openedFileIDs
+      if (!openedFileIDs.includes(fileID)) {
+        setOpenedFileIDs([...openedFileIDs, fileID])
+      }
+    })
   }
 
   const tabCilck = (fileID: string) => {
@@ -105,7 +109,9 @@ function App() {
   }
 
   const updateFileName = (id: string, title: string, isNew: boolean) => {
-    const newPath = path.join(saveLocation, `${title}.md`)
+    const newPath = isNew
+      ? join(saveLocation, `${title}.md`)
+      : join(dirname(files[id].path), `${title}.md`)
     const modifiedFile = { ...files[id], title, isNew: false, path: newPath }
     const newFiles = { ...files, [id]: modifiedFile }
     if (isNew) {
@@ -115,7 +121,7 @@ function App() {
         saveFileToStore(newFiles)
       })
     } else {
-      const oldPath = path.join(saveLocation, `${files[id].title}.md`)
+      const oldPath = join(saveLocation, `${files[id].title}.md`)
       fileHelper.renameFile(oldPath, newPath).then(() => {
         setFiles(newFiles)
         saveFileToStore(newFiles)
@@ -136,12 +142,52 @@ function App() {
       body: '##  请输入markdown',
       createdAt: new Date().getTime(),
       isNew: true,
-      path: '',
+      path: ''
     }
     setFiles({ ...files, [newId]: newFiles })
   }
 
-  const importFiles = () => {}
+  const importFiles = () => {
+    remote.dialog
+      .showOpenDialog({
+        title: '请选择导入 markDown 文件',
+        properties: ['openFile', 'multiSelections'],
+        filters: [{ name: 'markdown', extensions: ['md'] }]
+      })
+      .then((result: any) => {
+        if (result.canceled) {
+          return
+        }
+        const filteredPaths = result.filePaths.filter((path: string) => {
+          return !Object.values(files).find((file: File) => path === file.path)
+        })
+        if (filteredPaths.length) {
+          // TODO 可以直接读取body内容
+          //! 导入文件打开没内容
+          type importype = Pick<File, 'id' | 'title' | 'path'>[]
+          const importFilesArr: importype = filteredPaths.map(
+            (path: string) => ({
+              id: uuidv4(),
+              title: basename(path, extname(path)),
+              path
+            })
+          )
+          const newFiles = { ...files, ...flattenArr(importFilesArr) }
+          setFiles(newFiles)
+          saveFileToStore(newFiles)
+          remote.dialog.showMessageBox({
+            type: 'info',
+            title: `成功导入了${importFilesArr.length}个文件`,
+            message: `成功导入了${importFilesArr.length}个文件`
+          })
+        }
+        //["/Users/xiangjun/Desktop/name1.md", "/Users/xiangjun/Desktop/name2.md"]
+        console.log(result.filePaths)
+      })
+      .catch((err: any) => {
+        console.log(err)
+      })
+  }
 
   return (
     <div className="App flex h-full">
@@ -175,7 +221,7 @@ function App() {
               onChange={(value) => fileChange(avtiveFile.id, value)}
               options={{
                 minHeight: '525px',
-                autoDownloadFontAwesome: false,
+                autoDownloadFontAwesome: false
               }}
             />
           </>
