@@ -7,7 +7,7 @@ import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import { v4 as uuidv4 } from 'uuid'
 
-import { File } from './types/type'
+import { File, FlattenFiles } from './types/type'
 import { flattenArr, objToArr } from './utils/helper'
 import fileHelper from './utils/fileHelper'
 const path = window.require('path')
@@ -17,7 +17,7 @@ const Store = window.require('electron-store')
 //* 配置的文件信息储存位置 /Users/xiangjun/Library/Application Support/md-native/File\ data.json
 const fileStore = new Store({ name: 'File data' })
 
-const saveFileToStore = (files: object) => {
+const saveFileToStore = (files: FlattenFiles) => {
   // we don't have to store any info in file system, eg: isNew, body, etc
   const filesStoreObj = objToArr(files).reduce((result, file) => {
     const { id, path, title, createdAt } = file
@@ -33,7 +33,10 @@ const saveFileToStore = (files: object) => {
 }
 
 function App() {
-  const [files, setFiles] = useState(fileStore.get('files') || {})
+  // TODO 初始化文件可能在系统中删除的bug
+  const [files, setFiles] = useState(
+    (fileStore.get('files') as FlattenFiles) || {}
+  )
   const [activeFileID, setActiveFileID] = useState('')
   const [openedFileIDs, setOpenedFileIDs] = useState([] as string[])
   const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as string[])
@@ -50,6 +53,7 @@ function App() {
   const fileClick = (fileID: string) => {
     // set current active file
     setActiveFileID(fileID)
+    // TODO 打开文件需要读取文件，不用每次打开而且打开是读取保存后的文件
     // if openFiles don't have the current fileID
     // then add new fileId to the openedFileIDs
     if (!openedFileIDs.includes(fileID)) {
@@ -84,14 +88,20 @@ function App() {
   }
 
   const fileDelete = (id: string) => {
-    const deletePath = files[id].path
-    fileHelper.deleteFile(deletePath).then(() => {
-      Reflect.deleteProperty(files, id)
-      setFiles(files)
-      saveFileToStore(files)
-      // close tab if opened
-      tabClose(id)
-    })
+    //* 用delete或者Reflect.deleteProperty删除，react不会识别数据变化，必须要变异操作
+    const { [id]: value, ...afterFils } = files
+    if (files[id].isNew) {
+      setFiles(afterFils)
+    } else {
+      const deletePath = files[id].path
+      fileHelper.deleteFile(deletePath).then(() => {
+        // 点击esc后，input框未消失，react没有检测到文件的变化
+        setFiles(afterFils)
+        saveFileToStore(afterFils)
+        // close tab if opened
+        tabClose(id)
+      })
+    }
   }
 
   const updateFileName = (id: string, title: string, isNew: boolean) => {
@@ -99,6 +109,7 @@ function App() {
     const modifiedFile = { ...files[id], title, isNew: false, path: newPath }
     const newFiles = { ...files, [id]: modifiedFile }
     if (isNew) {
+      // TODO 新建文件重命名
       fileHelper.writeFile(newPath, files[id].body).then(() => {
         setFiles(newFiles)
         saveFileToStore(newFiles)
@@ -125,6 +136,7 @@ function App() {
       body: '##  请输入markdown',
       createdAt: new Date().getTime(),
       isNew: true,
+      path: '',
     }
     setFiles({ ...files, [newId]: newFiles })
   }

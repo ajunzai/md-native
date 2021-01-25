@@ -1,9 +1,7 @@
-import { File } from '../types/type'
-interface flattenType {
-  [id: string]: File
-}
-export const flattenArr = (arr: Array<File>): flattenType => {
-  return arr.reduce((map: flattenType, item: File) => {
+import { File, FlattenFiles } from '../types/type'
+
+export const flattenArr = (arr: Array<File>): FlattenFiles => {
+  return arr.reduce((map: FlattenFiles, item: File) => {
     map[item.id] = item
     return map
   }, {})
