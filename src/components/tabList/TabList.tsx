@@ -16,15 +16,16 @@ const TabList: React.FC<Tabs> = ({
   activeId,
   unsaveIds,
   onTabClick,
-  onTabClose,
+  onTabClose
 }) => {
   return (
     <ul className="flex w-full h-7">
       {files.map((file) => {
         const withUnsaveMark = unsaveIds.includes(file.id)
+        console.log(unsaveIds, file.id)
         const liStyle = classnames('tab-item', {
           active: activeId === file.id,
-          withUnsaved: withUnsaveMark,
+          withUnsaved: withUnsaveMark
         })
         return (
           <li className="nav-item" key={file.id}>

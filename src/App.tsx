@@ -37,6 +37,7 @@ function App() {
   const [files, setFiles] = useState(
     (fileStore.get('files') as FlattenFiles) || {}
   )
+  // 当前显示的文件
   const [activeFileID, setActiveFileID] = useState('')
   const [openedFileIDs, setOpenedFileIDs] = useState([] as string[])
   const [unsavedFileIDs, setUnsavedFileIDs] = useState([] as string[])
@@ -53,16 +54,16 @@ function App() {
   const fileClick = (fileID: string) => {
     // set current active file
     setActiveFileID(fileID)
-    // TODO 打开文件需要读取文件，不用每次打开而且打开是读取保存后的文件
+    // 打开文件需要读取文件，不用每次打开而且打开是读取保存后的文件
     fileHelper.readFile(files[fileID].path).then((data: any) => {
-      console.log('dafa', data)
-      console.log('file', files)
-      // if openFiles don't have the current fileID
-      // then add new fileId to the openedFileIDs
-      if (!openedFileIDs.includes(fileID)) {
-        setOpenedFileIDs([...openedFileIDs, fileID])
-      }
+      const newFile = { ...files[fileID], body: data, isLoaded: true }
+      setFiles({ ...files, [fileID]: newFile })
     })
+    // if openFiles don't have the current fileID
+    // then add new fileId to the openedFileIDs
+    if (!openedFileIDs.includes(fileID)) {
+      setOpenedFileIDs([...openedFileIDs, fileID])
+    }
   }
 
   const tabCilck = (fileID: string) => {
@@ -84,6 +85,8 @@ function App() {
 
   const fileChange = (id: string, value: string) => {
     // loop through file Array to update the new file
+    console.log('----')
+    //! 打开文件的文件变成了改变的 bug    打开文件触发三次tablist bug2
     const newFile = { ...files[id], body: value }
     setFiles({ ...files, [id]: newFile })
     if (!unsavedFileIDs.includes(id)) {
@@ -162,8 +165,7 @@ function App() {
           return !Object.values(files).find((file: File) => path === file.path)
         })
         if (filteredPaths.length) {
-          // TODO 可以直接读取body内容
-          //! 导入文件打开没内容
+          // 导入文件
           type importype = Pick<File, 'id' | 'title' | 'path'>[]
           const importFilesArr: importype = filteredPaths.map(
             (path: string) => ({
