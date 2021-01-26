@@ -7,7 +7,7 @@ interface Operate {
 }
 const OperateButton: React.FC<Operate> = ({ createNewFile, importFiles }) => {
   return (
-    <div className="flex h-8 ">
+    <div className="flex h-8 absolute bottom-0 w-full">
       <button
         className="flex-1 bg-gray-500 hover:bg-gray-300"
         type="button"

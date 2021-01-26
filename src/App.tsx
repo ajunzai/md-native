@@ -191,7 +191,7 @@ function App() {
 
   return (
     <div className="App flex h-full">
-      <div className="flex flex-col w-1/4 min-w-panel-l">
+      <div className="flex flex-col w-1/4 min-w-panel-l relative">
         <FileSearch title="我的云文档" onFileSearch={fileSearch} />
         <FileList
           files={searchFileList}

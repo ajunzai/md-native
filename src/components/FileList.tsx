@@ -5,6 +5,7 @@ import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 
 import { File } from '../types/type'
 import useKeyPress from '../hooks/useKeyPress'
+import useContextMenu from '../hooks/useContextMenu'
 interface FileListprops {
   files: File[]
   onSaveEdit: Function
@@ -16,7 +17,7 @@ const FileList: React.FC<FileListprops> = ({
   files,
   onFileDelete,
   onFileClick,
-  onSaveEdit,
+  onSaveEdit
 }) => {
   const [editStatus, setEditStatus] = useState('')
   const [value, setValue] = useState('')
@@ -42,6 +43,27 @@ const FileList: React.FC<FileListprops> = ({
       onFileDelete(file.id)
     }
   }
+  const itemArr = [
+    {
+      label: '打开',
+      click: () => {
+        console.log('click', clickedDom.current)
+      }
+    },
+    {
+      label: '重命名',
+      click: () => {
+        console.log('renaming', clickedDom)
+      }
+    },
+    {
+      label: '删除',
+      click: () => {
+        console.log('deleting', clickedDom)
+      }
+    }
+  ]
+  const clickedDom = useContextMenu(itemArr, '.file-link')
 
   useEffect(() => {
     const editItem = files.find((file) => file.id === editStatus)
@@ -68,7 +90,7 @@ const FileList: React.FC<FileListprops> = ({
     }
   }, [files])
   return (
-    <ul className="h-full">
+    <ul className="file-link">
       {files.map((file) => (
         <li
           className="flex h-10 px-2 items-center hover:bg-blue-100 cursor-pointer"
